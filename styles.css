@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+h2 {
+    text-align: center;
+}
+input {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+button {
+    width: 80px;
+    padding: 5px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+button:hover {
+    background: #218838;
+}
+ul {
+    list-style: none;
+    padding: 0;
+}
+li {
+    background: #eee;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.completed {
+    text-decoration: line-through;
+    color: grey;
+}
+.delete, .complete {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 30px;
+    text-align: center;
+    margin-right: 10px;
+}
+.delete:hover {
+    background: darkred;
+}
+.complete {
+    background: blue;
+}
+.complete:hover {
+    background: darkblue;
+}
+.task-container {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+.taskList li, .subject-container {
+    display: flex;
+    align-items: center;
+}
+#subjectList {
+    max-height: 300px; 
+    overflow-y: auto;
+    padding-right: 5px; 
+}
