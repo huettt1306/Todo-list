@@ -1,3 +1,6 @@
+// appLogic.js
+import { putData, loadData } from './firebaseConfig.js';
+
 function saveData() {
     let subjects = [];
     document.querySelectorAll('.subject-container').forEach(subject => {
@@ -11,15 +14,74 @@ function saveData() {
         });
         subjects.push({ subject: subjectText, tasks });
     });
-
-    localStorage.setItem('subjects', JSON.stringify(subjects));
+    putData(subjects)
 }
 
-function loadData() {
-    let subjects = JSON.parse(localStorage.getItem('subjects') || '[]');
+// Hàm thêm môn học
+function addSubject() {
+    let subjectInput = document.getElementById('subject');
+    let subjectText = subjectInput.value.trim();
+    if (subjectText === '') return;
+
+    let subjectLi = document.createElement('li');
+    subjectLi.classList.add('subject-container');
+    subjectLi.innerHTML = `
+        <button class="delete" onclick="removeSubject(this)">X</button>
+        <button class="complete" onclick="completeTask(this)">✔</button>
+        <div class="task-container"><strong>${subjectText}</strong></div>
+        <ul class="taskList"></ul>
+        <input type='text' placeholder='Add a task' class='taskInput'>
+        <button onclick='addTask(this)'>Add Task</button>
+    `;
+    document.getElementById('subjectList').appendChild(subjectLi);
+    subjectInput.value = '';
+
+    saveData();
+}
+
+// Hàm xóa môn học
+function removeSubject(button) {
+    button.parentElement.remove();
+    saveData();
+}
+
+// Hàm thêm nhiệm vụ
+function addTask(button) {
+    let taskInput = button.previousElementSibling;
+    let taskText = taskInput.value.trim();
+    if (taskText === '') return;
+
+    let taskLi = document.createElement('li');
+    taskLi.innerHTML = `
+        <button class="delete" onclick="removeTask(this)">X</button>
+        <button class="complete" onclick="completeTask(this)">✔</button>
+        <div class="task-container">${taskText}</div>
+    `;
+    button.parentElement.querySelector('.taskList').appendChild(taskLi);
+    taskInput.value = '';
+
+    saveData();
+}
+
+// Hàm xóa nhiệm vụ
+function removeTask(button) {
+    button.parentElement.remove();
+    saveData();
+}
+
+// Hàm hoàn thành nhiệm vụ
+function completeTask(button) {
+    button.parentElement.classList.toggle('completed');    
+    saveData();
+}
+
+// Hàm tải dữ liệu khi trang được tải
+window.onload = async () => {
+    let subjects = await loadData();
     subjects.forEach(data => {
         let subjectLi = document.createElement('li');
         subjectLi.classList.add('subject-container');
+        subjectLi.dataset.id = data.id;
         subjectLi.innerHTML = `
             <button class="delete" onclick="removeSubject(this)">X</button>
             <button class="complete" onclick="completeTask(this)">✔</button>
@@ -42,60 +104,10 @@ function loadData() {
             taskList.appendChild(li);
         });
     });
-}
+};
 
-function addSubject() {
-    let subjectInput = document.getElementById('subject');
-    let subjectText = subjectInput.value.trim();
-    if (subjectText === '') return;
-
-    let subjectLi = document.createElement('li');
-    subjectLi.classList.add('subject-container');
-    subjectLi.innerHTML = `
-        <button class="delete" onclick="removeSubject(this)">X</button>
-        <button class="complete" onclick="completeTask(this)">✔</button>
-        <div class="task-container"><strong>${subjectText}</strong></div>
-        <ul class="taskList"></ul>
-        <input type='text' placeholder='Add a task' class='taskInput'>
-        <button onclick='addTask(this)'>Add Task</button>
-    `;
-    document.getElementById('subjectList').appendChild(subjectLi);
-    subjectInput.value = '';
-
-    saveData(); // Lưu dữ liệu sau khi thêm môn học
-}
-
-function removeSubject(button) {
-    button.parentElement.remove();
-    saveData(); // Lưu dữ liệu sau khi xóa môn học
-}
-
-function addTask(button) {
-    let taskInput = button.previousElementSibling;
-    let taskText = taskInput.value.trim();
-    if (taskText === '') return;
-
-    let li = document.createElement('li');
-    li.innerHTML = `
-        <button class="delete" onclick="removeTask(this)">X</button>
-        <button class="complete" onclick="completeTask(this)">✔</button>
-        <div class="task-container">${taskText}</div>
-    `;
-    button.parentElement.querySelector('.taskList').appendChild(li);
-    taskInput.value = '';
-
-    saveData(); // Lưu dữ liệu sau khi thêm nhiệm vụ
-}
-
-function removeTask(button) {
-    button.parentElement.remove();
-    saveData(); // Lưu dữ liệu sau khi xóa nhiệm vụ
-}
-
-function completeTask(button) {
-    button.parentElement.classList.toggle('completed');
-    saveData(); // Lưu trạng thái sau khi hoàn thành nhiệm vụ
-}
-
-// Tải dữ liệu từ localStorage khi trang được tải
-window.onload = loadData;
+window.addSubject = addSubject;
+window.removeSubject = removeSubject;
+window.addTask = addTask;
+window.removeTask = removeTask;
+window.completeTask = completeTask;
